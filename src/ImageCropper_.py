@@ -2,6 +2,7 @@ import cv2
 import os
 import numpy as np
 from MyUtils_ import MyUtils
+from os.path import expanduser
 
 ### This class has all the methods involved with cropping an image
 ### We crop images to make reduce the dimensionality and keep all 
@@ -29,19 +30,24 @@ class ImageCropper:
     #
     # Returns - Nothing, the pictures are in the destination folder
     @staticmethod
-    def crop_all_images(destinationFolder, sourceFolder):
+    def crop_all_images(sourceFolder, destinationFolder):
+        sourceFolder = expanduser(sourceFolder)
+        destinationFolder = expanduser(destinationFolder)
+
         MyUtils.clean_and_make_dir(destinationFolder)
         categories = MyUtils.listdir_nohidden(sourceFolder)
 
         #The highest level directory will have a folder for each category
         # (0_Eyes, 1_Eye, 2_Eyes, etc.)
         for category in categories:
+            print("Cropping Images for " + category)
             os.mkdir(destinationFolder + "/" + category)
             wells = MyUtils.listdir_nohidden(sourceFolder + "/" + category)
 
             # Inside each category will be a bunch of folders were each folder
             # is a singel well
             for well in wells:
+                print("     Cropping Images for Well " + well) 
                 os.mkdir(destinationFolder + "/" + category + "/" + well)
                 files = MyUtils.listdir_nohidden(sourceFolder + "/" + category
                         + "/" + well)
@@ -74,35 +80,36 @@ class ImageCropper:
                     imagecrop = ImageCropper.crop_image(imageDiff, image2)
 
                     # Find the center so we can rotate around it
-                    (h,w) = imagecrop.shape[:2]
-                    center = (w / 2, h / 2)
+                   # (h,w) = imagecrop.shape[:2]
+                   # center = (w / 2, h / 2)
 
-                    # Compute the rotation matrix for each rotation
-                    M_90 = cv2.getRotationMatrix2D(center, 90, 1.0)
-                    M_180 =  cv2.getRotationMatrix2D(center, 180, 1.0)
-                    M_270 =  cv2.getRotationMatrix2D(center, 270, 1.0)
+                   # # Compute the rotation matrix for each rotation
+                   # M_90 = cv2.getRotationMatrix2D(center, 90, 1.0)
+                   # M_180 =  cv2.getRotationMatrix2D(center, 180, 1.0)
+                   # M_270 =  cv2.getRotationMatrix2D(center, 270, 1.0)
 
-                    # Create the rotated images
-                    rotated_90 = cv2.warpAffine(imagecrop, M_90, (h, w))
-                    rotated_180 =  cv2.warpAffine(imagecrop, M_180, (h, w))
-                    rotated_270 =  cv2.warpAffine(imagecrop, M_270, (h, w))
+                   # # Create the rotated images
+                   # rotated_90 = cv2.warpAffine(imagecrop, M_90, (h, w))
+                   # rotated_180 =  cv2.warpAffine(imagecrop, M_180, (h, w))
+                   # rotated_270 =  cv2.warpAffine(imagecrop, M_270, (h, w))
 
-                    # Write the images
+                   # # Write the images
                     cv2.imwrite(destinationFolder
                             + "/" + category + "/" + well + "/" + images[i]
                             , imagecrop)
-                    cv2.imwrite(destinationFolder
-                            + "/" + category + "/" + well + "/"
-                            + "90_" + images[i]
-                            , rotated_90)
-                    cv2.imwrite(destinationFolder
-                            + "/" + category + "/" + well + "/"
-                            + "180_" + images[i]
-                            , rotated_180)
-                    cv2.imwrite(destinationFolder
-                            + "/" + category + "/" + well + "/"
-                            + "270_" + images[i]
-                            , rotated_270)
+                    print ("            Done with image " + str(i))
+                   # cv2.imwrite(destinationFolder
+                   #         + "/" + category + "/" + well + "/"
+                   #         + "90_" + images[i]
+                   #         , rotated_90)
+                   # cv2.imwrite(destinationFolder
+                   #         + "/" + category + "/" + well + "/"
+                   #         + "180_" + images[i]
+                   #         , rotated_180)
+                   # cv2.imwrite(destinationFolder
+                   #         + "/" + category + "/" + well + "/"
+                   #         + "270_" + images[i]
+                   #         , rotated_270)
         return
 
 
@@ -125,8 +132,8 @@ class ImageCropper:
         maxsum = 0
         min_i = 0
         min_j = 0
-        search_range = ImageCropper.search_range / 2
-        crop_size = ImageCropper.crop_size / 2
+        search_range = int(ImageCropper.search_range / 2)
+        crop_size = int(ImageCropper.crop_size / 2)
 
         # Traverse all the pixels in the subtracted image
         # Look for a pixel that is less thean the threshold. 
