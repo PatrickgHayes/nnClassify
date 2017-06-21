@@ -1,23 +1,17 @@
-import MyUtils_
-import ImageCropper_
-import Predictor_
-import NeuralNetwork_
-import Evaluator_
-import os
-from MyUtils_ import MyUtils
-from ImageCropper_ import ImageCropper
-from Predictor_ import Predictor
 from NeuralNetwork_ import NeuralNetwork
-from Evaluator_ import Evaluator
+from Pickler_  import Pickler
+from Transfer_Calculator_ import Transfer_Calculator as tc
+from Predictor_ import Predictor
 from Constants import BASE_DIR
 from Constants import MODELS_DIR
 from Constants import INCEPTION_DIR
 from Constants import TRAIN_DIR
 from Constants import PRED_DIR
-from Constants import TEST_DIR
+from Constants import TEST_WELLS_DIR
+from Constants import TEST_INDL_DIR
 import Constants
+import os
 import pickle
-
 
 class Main:
     """ Contains the commands for running nnClassify from the command line"""
@@ -29,7 +23,8 @@ class Main:
         if not os.path.exists(TRAIN_DIR): os.makedirs(TRAIN_DIR)
         if not os.path.exists(PRED_DIR): os.makedirs(PRED_DIR)
         if not os.path.exists(INCEPTION_DIR): os.makedirs(INCEPTION_DIR)
-        if not os.path.exists(TEST_DIR): os.makedirs(TEST_DIR)
+        if not os.path.exists(TEST_WELLS_DIR): os.makedirs(TEST_WELLS_DIR)
+        if not os.path.exists(TEST_INDL_DIR): os.makedirs(TEST_INDL_DIR)
         return
 
 
@@ -51,8 +46,17 @@ class Main:
         print ('Done Loading Model')
         print (' ') 
         print ('Loading Images Please Be Patient')
+        
+        if not os.path.exists(TRAIN_DIR + trainning_set + "/labels.p"):
+            Pickler.pickleIndividualSet(TRAIN_DIR + trainning_set)
+        
         labels = pickle.load(open(TRAIN_DIR 
             + trainning_set + "/labels.p","rb"))
+
+        if not os.path.exists(TRAIN_DIR+ trainning_set + "/transfer_values.p"):
+            tc.getTransferValues(TRAIN_DIR + trainning_set + "/images.p",
+                    TRAIN_DIR + trainning_set + "/transfer_values.p")
+
         imgs =  pickle.load(open(TRAIN_DIR
             + trainning_set + "/transfer_values.p","rb"))
         encoding = [Constants.ABNORMAL, Constants.NORMAL, Constants.WEIRD]
@@ -68,16 +72,30 @@ class Main:
         print ('Done saving')
         return
 
-
     @staticmethod
     def predict(pred_set, name):
         Main.__setup()
         print ('Loading Model')
         model = NeuralNetwork("load", file_path=MODELS_DIR + name)
         print ('Done Loading Model')
+        print (' ')
+        print ('Starting to predict')
+        Predictor.predict_wells(PRED_DIR + pred_set, 
+                    [Constants.ABNORMAL,
+                        Constants.NORMAL,
+                        Constants.WEIRD],
+                    model)
+
+
+    @staticmethod
+    def test_wells(test_set, name):
+        Main.__setup()
+        print ('Loading Model')
+        model = NeuralNetwork("load", file_path=MODELS_DIR + name)
+        print ('Done Loading Model')
         print (' ') 
         print ('Starting to predict')
-        Predictor.predict_all_well(PRED_DIR + pred_set,
+        Predictor.test_wells(TEST_WELLS_DIR + test_set,
                 [Constants.ABNORMAL,
                     Constants.NORMAL,
                     Constants.WEIRD],
@@ -92,9 +110,18 @@ class Main:
         print ('Done Loading Model')
         print (' ')
         print ('Loading Images Please Be Patient')
-        labels = pickle.load(open(TEST_DIR 
+
+        if not os.path.exists(TEST_INDL_DIR + test_set + "/labels.p"):
+            Pickler.pickleIndividualSet(TEST_INDL_DIR + test_set)
+
+        labels = pickle.load(open(TEST_INDL_DIR 
             + test_set + "/labels.p","rb"))
-        imgs =  pickle.load(open(TEST_DIR
+        
+        if not os.path.exists(TEST_INDL_DIR + test_set + "/transfer_values.p"):
+            tc.getTransferValues(TEST_INDL_DIR + test_set + "/images.p",
+                    TEST_INDL_DIR + test_set + "/transfer_values.p")
+
+        imgs =  pickle.load(open(TEST_INDL_DIR
             + test_set + "/transfer_values.p","rb"))
         print ('Done Loading Images')
         print (' ')

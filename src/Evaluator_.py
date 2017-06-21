@@ -59,24 +59,14 @@ class Evaluator:
     # category does not meet the thresehold then it returns Not Sure
     @staticmethod
     def max_pred(labels, encoding):
-        THRESHOLD = 0.0 
         maxIdx = None
-        second_place_val = None
         maxVal = None
-        for idx, val in enumerate(labels[1:len(labels)]):
+        for idx, val in enumerate(labels):
             if maxIdx is None or val > maxVal:
                 maxIdx = idx 
-                second_place_val = maxVal
                 maxVal = val 
-            elif (val <= maxVal and 
-                    (second_place_val == None or val > second_place_val)):
-                second_place_val = val 
 
-        if (second_place_val is not None and 
-                (maxVal - second_place_val > THRESHOLD)):
-            return encoding[maxIdx]
-        else:
-            return Constants.NOT_SURE 
+        return encoding[maxIdx]
 
 
     #Finds the category with the highest confidence and the category
