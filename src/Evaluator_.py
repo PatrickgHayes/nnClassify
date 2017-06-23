@@ -1,6 +1,6 @@
 import numpy as np
-import Constants
-from MyUtils_ import MyUtils
+from src import Constants
+from src.MyUtils_ import MyUtils
 
 
 ### This class is for evaluating how the performance of our predictions
@@ -75,16 +75,16 @@ class Evaluator:
     @staticmethod
     def is_it_normal(labels):
         image_confidance = 0.85
-        confidance_count_threshold = 15
-        maybe_threshold = 2 
+        confidance_count_threshold = 0.075
+        maybe_threshold = 0.01 
         confidance_count = 0 
         for i in range(0,len(labels)):
             if labels[i][1] >= image_confidance:
                 confidance_count += 1
 
-        if confidance_count >= confidance_count_threshold:
+        if confidance_count * 1.0 / len(labels)  >= confidance_count_threshold:
             return Constants.NORMAL
-        elif confidance_count >= maybe_threshold:
+        elif confidance_count * 1.0 / len(labels) >= maybe_threshold:
             return Constants.NOT_SURE
         else:
             return Constants.ABNORMAL

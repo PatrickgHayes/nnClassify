@@ -29,9 +29,9 @@
 
 import numpy as np
 import tensorflow as tf
-import download
+from src import download
 import os
-
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 ########################################################################
 # Various directories and file-names.
 

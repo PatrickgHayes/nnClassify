@@ -8,12 +8,12 @@ import numpy as np
 import shutil
 import re
 import pickle
-import Constants
+from src import Constants
 
-from Constants import BASE_DIR
-from Constants import PRED_DIR
-from Constants import TRAIN_DIR
-from MyUtils_ import MyUtils
+from src.Constants import BASE_DIR
+from src.Constants import PRED_DIR
+from src.Constants import TRAIN_DIR
+from src.MyUtils_ import MyUtils
 
 class Pickler:
 

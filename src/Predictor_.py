@@ -1,11 +1,11 @@
 import cv2
 import numpy as np
-from MyUtils_ import MyUtils
-from ImageCropper_ import ImageCropper
-from Evaluator_ import Evaluator
-from Pickler_ import Pickler
-import Constants
-from Transfer_Calculator_ import Transfer_Calculator as tc
+from src.MyUtils_ import MyUtils
+from src.ImageCropper_ import ImageCropper
+from src.Evaluator_ import Evaluator
+from src.Pickler_ import Pickler
+from src import Constants
+from src.Transfer_Calculator_ import Transfer_Calculator as tc
 import pickle
 import os
 

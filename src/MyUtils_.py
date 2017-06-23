@@ -5,7 +5,8 @@ import shutil
 import re
 import random
 import math
-import Constants
+from src import Constants
+
 
 # This class contains all the helper methods that are not unique
 # to any one class

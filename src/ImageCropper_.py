@@ -1,7 +1,7 @@
 import cv2
 import os
 import numpy as np
-from MyUtils_ import MyUtils
+from src.MyUtils_ import MyUtils
 from os.path import expanduser
 
 ### This class has all the methods involved with cropping an image

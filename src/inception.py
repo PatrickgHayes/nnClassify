@@ -56,11 +56,11 @@
 
 import numpy as np
 import tensorflow as tf
-import download
-from cache import cache
+from src import download
+from src.cache import cache
 import os
 import sys
-
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 ########################################################################
 # Various directories and file-names.
 

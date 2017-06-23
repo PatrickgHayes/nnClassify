@@ -4,12 +4,12 @@
 # see (https://github.com/Hvass-Labs/TensorFlow-Tutorials
 #                   /blob/master/08_Transfer_Learning.ipynb)
 import os
-from Constants import INCEPTION_DIR
-from MyUtils_ import MyUtils
+from src.Constants import INCEPTION_DIR
+from src.MyUtils_ import MyUtils
 import pickle
 # Functions and classes for loading and using the Inception model.
-import inception
-from inception import transfer_values_cache
+from src import inception
+from src.inception import transfer_values_cache
 
 class Transfer_Calculator:
 
