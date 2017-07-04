@@ -14,16 +14,16 @@ class Predictor:
  ### METHODS ################################################################
     @staticmethod
     def __test_setup(testset_path):
-        pickles_path = testset_path + "/" + Constants.PICKLES + "/"
+        pickles_path = os.path.join(testset_path, Constants.PICKLES)
         if not os.path.exists(pickles_path):
             os.makedirs(pickles_path)
             Pickler.pickle_wells(testset_path)
 
-        results_path = testset_path + "/" + Constants.RESULTS_DIR + "/"
+        results_path = os.path.join(testset_path, Constants.RESULTS_DIR)
         if not os.path.exists(results_path):
             os.makedirs(results_path)
 
-        transfer_path = testset_path + "/" + Constants.TRANSFER + "/"
+        transfer_path = os.path.join(testset_path, Constants.TRANSFER)
         if not os.path.exists(transfer_path):
             os.makedirs(transfer_path)
             tc.get_all_transfer_values(testset_path)
@@ -31,16 +31,16 @@ class Predictor:
     
     @staticmethod
     def __pred_setup(predset_path):
-        pickles_path = predset_path + "/" + Constants.PICKLES + "/"
+        pickles_path = os.path.join(predset_path, Constants.PICKLES)
         if not os.path.exists(pickles_path):
             os.makedirs(pickles_path)
             Pickler.pickle_wells_no_category(predset_path)
 
-        results_path = predset_path + "/" + Constants.RESULTS_DIR + "/"
+        results_path = os.path.join(predset_path, Constants.RESULTS_DIR)
         if not os.path.exists(results_path):
             os.makedirs(results_path)
 
-        transfer_path = predset_path + "/" + Constants.TRANSFER + "/"
+        transfer_path = os.path.join(predset_path, Constants.TRANSFER)
         if not os.path.exists(transfer_path):
             os.makedirs(transfer_path)
             tc.get_well_transfer_values(predset_path)
@@ -100,15 +100,15 @@ class Predictor:
         predicted_labels = list()
 
         Predictor.__pred_setup(predset_path)
-        wells = MyUtils.listdir_nohidden(predset_path 
-                                                    + "/Transfer_Values/")
+        wells = MyUtils.listdir_nohidden(os.path.join(
+            predset_path, "Transfer_Values"))
         for well in wells:
             print ("   Predicting well " + well )
             #Get the well results from each well
-            trans_value_path = (predset_path + "/Transfer_Values/"
-                                     + well)
-            results_path = (predset_path+ "/Results/"
-                                     + well + ".txt")
+            trans_value_path = (os.path.join(predset_path, "Transfer_Values"
+                                     , well))
+            results_path = (os.path.join(predset_path, "Results",
+                                     well + ".txt"))
             well_results, pred_cat = Predictor.predict_well(
                                          trans_value_path,
                                          results_path,
@@ -122,7 +122,8 @@ class Predictor:
             predicted_labels.append(pred_cat)
 
         # Write the results for the test set in a new file
-        with open(predset_path + "/Results/Pred_Set.txt",'w') as results:
+        with open(os.path.join(
+            predset_path, "Results","Pred_Set.txt"),'w') as results:
              # Individual Well Results Header
             results.write("Well\tPredicted_Category\n")
 
@@ -148,23 +149,25 @@ class Predictor:
         predicted_labels = list()
         
         Predictor.__test_setup(testset_path) 
-        categories = MyUtils.listdir_nohidden(testset_path 
-                                                + "/Transfer_Values/")
+        categories = MyUtils.listdir_nohidden(os.path.join(testset_path 
+                                                ,"Transfer_Values"))
 
         for category in categories:
             print ("Predicting " + category)
-            if not os.path.exists(testset_path + "/Results/" + category):
-                os.makedirs(testset_path + "/Results/" + category)
-            wells = MyUtils.listdir_nohidden(testset_path
-                                            + "/Transfer_Values/" + category)
+            if not os.path.exists(
+                    os.path.join(testset_path, "Results", category)):
+                os.makedirs(os.path.join(testset_path, "Results", category))
+            wells = MyUtils.listdir_nohidden(os.path.join(testset_path
+                                            ,"Transfer_Values", category))
 
             for well in wells:
                 print ("   Predicting well " + well )
                 #Get the well results from each well
-                trans_value_path = (testset_path + "/Transfer_Values/"
-                                        + category + "/" + well)
-                results_path = (testset_path+ "/Results/" 
-                                        + category + "/" + well + ".txt")
+                trans_value_path = (os.path.join(
+                                        testset_path, "Transfer_Values"
+                                        , category, well))
+                results_path = (os.path.join(testset_path, "Results" 
+                                        ,category, well + ".txt"))
                 well_results, pred_cat = Predictor.predict_well(
                                              trans_value_path,
                                              results_path,
@@ -185,7 +188,8 @@ class Predictor:
                                                     predicted_labels)
         
         # Write the results for the test set in a new file
-        with open(testset_path + "/Results/Test_Set.txt",'w') as results:
+        with open(os.path.join(
+                testset_path, "Results", "Test_Set.txt"),'w') as results:
             results.write("All Well Results\n")
             results.write("Balanced Error Rate: " + str(BER) + '\n')
             results.write("True Positive Count "

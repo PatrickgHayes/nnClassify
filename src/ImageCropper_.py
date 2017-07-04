@@ -3,6 +3,7 @@ import os
 import numpy as np
 from src.MyUtils_ import MyUtils
 from os.path import expanduser
+import os
 
 ### This class has all the methods involved with cropping an image
 ### We crop images to make reduce the dimensionality and keep all 
@@ -41,16 +42,17 @@ class ImageCropper:
         # (0_Eyes, 1_Eye, 2_Eyes, etc.)
         for category in categories:
             print("Cropping Images for " + category)
-            os.mkdir(destinationFolder + "/" + category)
-            wells = MyUtils.listdir_nohidden(sourceFolder + "/" + category)
+            os.mkdir(os.path.join(destinationFolder, category))
+            wells = MyUtils.listdir_nohidden(
+                    os.path.join(sourceFolder, category))
 
             # Inside each category will be a bunch of folders were each folder
             # is a singel well
             for well in wells:
                 print("     Cropping Images for Well " + well) 
-                os.mkdir(destinationFolder + "/" + category + "/" + well)
-                files = MyUtils.listdir_nohidden(sourceFolder + "/" + category
-                        + "/" + well)
+                os.mkdir(os.path.join(destinationFolder, category, well))
+                files = MyUtils.listdir_nohidden(os.path.join(sourceFolder,
+                    category, well))
                 images = []
 
                 # Each well will have around 50 frames (individual images)
@@ -59,16 +61,16 @@ class ImageCropper:
 
                 # Read in the image. Do the subtraction. Find the head, and
                 # crop
-                path = sourceFolder + "/" + category + "/" + well + "/"
+                path = os.path.join(sourceFolder, category, well)
                 for i in range(1,len(images)):
-                    image1 = cv2.imread(path + images[i-1],0)
+                    image1 = cv2.imread(os.path.join(path, images[i-1]),0)
                     if image1 is None:
                         print ("Image " + str(i) + " of well " 
                                 + str(well) + " could not be opened")
-                        print (os.path.exists(path + images[i-1]))
+                        print (os.path.join(path, images[i-1]))
                         continue
                     image1 = image1.astype(np.int16)
-                    image2 = cv2.imread(path + images[i],0)
+                    image2 = cv2.imread(os.path.join(path, images[i]),0)
                     if image2 is None:
                         print ("Image " + str(i) + " of well " 
                                 + str(well) + " could not be opened")
@@ -94,8 +96,8 @@ class ImageCropper:
                    # rotated_270 =  cv2.warpAffine(imagecrop, M_270, (h, w))
 
                    # # Write the images
-                    cv2.imwrite(destinationFolder
-                            + "/" + category + "/" + well + "/" + images[i]
+                    cv2.imwrite(os.path.join(destinationFolder
+                            ,category, well, images[i])
                             , imagecrop)
                     print ("            Done with image " + str(i))
                    # cv2.imwrite(destinationFolder

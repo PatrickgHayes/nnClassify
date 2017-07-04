@@ -35,27 +35,29 @@ class Transfer_Calculator:
     
     @staticmethod
     def get_all_transfer_values(test_set):
-        categories = MyUtils.listdir_nohidden(test_set + "/Images/")
+        categories = MyUtils.listdir_nohidden(os.path.join(test_set, "Images"))
         # The highest level directory will have a folder for each category
         for category in categories:
-            os.mkdir(test_set + "/Transfer_Values/" + category)
-            wells = list(MyUtils.listdir_nohidden(test_set + "/Pickles/"
-                    + category))
+            os.mkdir(os.path.join(test_set, "Transfer_Values", category))
+            wells = list(MyUtils.listdir_nohidden(os.path.join(
+                test_set, "Pickles", category)))
     	
             for well in wells:
-                Transfer_Calculator.getTransferValues(test_set + "/Pickles/"
-                                    + category + "/" + well,
-                                     test_set + "/Transfer_Values/"
-                                    + category + "/" + well)
+                Transfer_Calculator.getTransferValues(
+                        os.path.join(test_set, "Pickles"
+                                    ,category, well)
+                        , os.path.join(test_set, "Transfer_Values"
+                                       , category, well))
         return
 
     @staticmethod
     def get_well_transfer_values(pred_set):
-        wells = MyUtils.listdir_nohidden(pred_set + "/Images/")
+        wells = MyUtils.listdir_nohidden(os.path.join(pred_set, "Images"))
 
         for well in wells:
-            Transfer_Calculator.getTransferValues(pred_set + "/Pickles/"
-                    + well, pred_set + "/Transfer_Values/" + well)
+            Transfer_Calculator.getTransferValues(
+                    os.path.join(pred_set, "Pickles", well)
+                    , os.path.join(pred_set, "Transfer_Values", well))
 
     
 

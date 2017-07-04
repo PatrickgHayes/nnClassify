@@ -21,26 +21,26 @@ class Pickler:
     def pickle_wells(pred_set):
         """ This method pickles all the wells in a prediction set
         individually"""
-        categories = MyUtils.listdir_nohidden(pred_set + "/Images/")
+        categories = MyUtils.listdir_nohidden(os.path.join(pred_set,"Images"))
     
-        if not os.path.exists(pred_set + "/Pickles/"): os.makedirs(
-                                            pred_set + "/Pickles/")
-    
+        if not os.path.exists(os.path.join(pred_set, "Pickles")):
+            os.makedirs(os.path.join(pred_set, "Pickles"))
+
         #The highest level directory will have a folder for each category
         # (0_Eyes, 1_Eye, 2_Eyes, etc.)
         for category in categories:
-            if not os.path.exists(pred_set + "/Pickles/" + category): (
-                         os.makedirs(pred_set + "/Pickles/" + category))
+            if not os.path.exists(os.path.join(pred_set, "Pickles", category)):
+                os.makedirs(os.path.join(pred_set, "Pickles", category))
     
-            wells = MyUtils.listdir_nohidden(pred_set + "/Images/"
-                                                                    + category)
+            wells = MyUtils.listdir_nohidden(os.path.join(pred_set, "Images"
+                                                                    ,category))
     
             # Inside each category will be a bunch of folders were each folder
             # is a singel well
             for well in wells:
                 print ("Pickling well" + well)
-                files = list(MyUtils.listdir_nohidden(pred_set
-                    + "/Images/" + category+ "/" + well))
+                files = list(MyUtils.listdir_nohidden(
+                    os.path.join(pred_set, "Images", category, well)))
     
                 images = []
     
@@ -50,13 +50,12 @@ class Pickler:
                 images_np = np.zeros((len(images), 100, 100, 3))
     
                 for i in range(0, len(images)):
-                    images_np[i,:,:,:] = cv2.imread(pred_set
-                            + '/Images/' + category + "/"
-                            + well + "/" + images[i])
+                    images_np[i,:,:,:] = cv2.imread(os.path.join(
+                            pred_set, 'Images', category, well,  images[i]))
     
                 pickle.dump(images_np,
-                            open(pred_set + '/Pickles/'
-                                + category + '/' + well,"wb"))
+                            open(os.path.join(pred_set, 'Pickles'
+                                , category, well),"wb"))
                 print ("Done with well " + well)
                 print (" ")
         return
@@ -65,18 +64,18 @@ class Pickler:
     def pickle_wells_no_category(pred_set):
         """ This method pickles all the images for a prediction set.
         A prediction set has no categories"""
-        if not os.path.exists(pred_set + "/Pickles/"): os.makedirs(
-                                            pred_set + "/Pickles/")
+        if not os.path.exists(os.path.join(pred_set, "Pickles")):
+            os.makedirs(os.path.join(pred_set, "Pickles"))
     
     
-        wells = MyUtils.listdir_nohidden(pred_set + "/Images/")
+        wells = MyUtils.listdir_nohidden(os.path.join(pred_set, "Images"))
     
         # Inside each category will be a bunch of folders were each folder
         # is a singel well
         for well in wells:
             print ("Pickling well" + well)
-            files = list(MyUtils.listdir_nohidden(pred_set
-                + "/Images/" + well))
+            files = list(MyUtils.listdir_nohidden(os.path.join(
+                pred_set, "Images", well)))
     
             images = []
     
@@ -86,13 +85,13 @@ class Pickler:
             images_np = np.zeros((len(images), 100, 100, 3)) 
     
             for i in range(0, len(images)):
-                images_np[i,:,:,:] = cv2.imread(pred_set
-                        + '/Images/' 
-                        + well + "/" + images[i])
+                images_np[i,:,:,:] = cv2.imread(os.path.join(pred_set
+                        ,'Images' 
+                        , well, images[i]))
     
             pickle.dump(images_np,
-                        open(pred_set + '/Pickles/'
-                            + well,"wb"))
+                        open(os.path.join(pred_set, 'Pickles'
+                             ,well),"wb"))
             print ("Done with well " + well)
             print (" ")
         return
@@ -107,14 +106,14 @@ class Pickler:
     
         labels = []
         all_images_np = np.empty((0,100,100,3))
-        categories = MyUtils.listdir_nohidden(set_path
-                                                + '/Images/')
+        categories = MyUtils.listdir_nohidden(os.path.join(set_path
+                                                ,'Images'))
     
         for category in categories:
     
             images = []
-            files = list(MyUtils.listdir_nohidden(set_path  
-                                        + "/Images/" + category))
+            files = list(MyUtils.listdir_nohidden(os.path.join(set_path  
+                                        ,"Images", category)))
     
             for img in files:
                 images.append(img)
@@ -124,8 +123,8 @@ class Pickler:
             images_np = np.zeros((len(images), 100, 100, 3))
     
             for i in range(0, len(images)):
-                images_np[i,:,:,:] = cv2.imread(set_path
-                        + '/Images/' + category + "/" + images[i])
+                images_np[i,:,:,:] = cv2.imread(os.path.join(set_path
+                        ,'Images', category, images[i]))
                 if category == Constants.WEIRD :
                     labels.append([0,0,1])
                 elif category == Constants.NORMAL :
@@ -137,9 +136,9 @@ class Pickler:
                     axis = 0)
             labels_np = np.array(labels)
         pickle.dump( all_images_np, 
-                open(set_path + '/images.p',"wb"))
+                open(os.path.join(set_path, 'images.p'),"wb"))
         pickle.dump( labels_np, 
-                open(set_path + '/labels.p',"wb"))
+                open(os.path.join(set_path, 'labels.p'),"wb"))
     
         return
 

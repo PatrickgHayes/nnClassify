@@ -71,10 +71,11 @@ class MyUtils:
         folders = list(MyUtils.listdir_nohidden(path))
         for idx, folder in enumerate(folders):
             print ('Loading Images in folder ' + folder)
-            all_images = list(MyUtils.images_in_folder(path + '/' + folder))
+            all_images = list(MyUtils.images_in_folder(
+                os.path.join(path, folder)))
             for img in all_images:
                 encoding = [0] * len(folders)
-                pixels = cv2.imread(path + '/' + folder + '/' + img,0)
+                pixels = cv2.imread(os.path.join(path, folder, img),0)
                 if pixels is None:
                     print ('Bad')
                     continue

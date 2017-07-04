@@ -34,7 +34,7 @@ class Main:
         model = NeuralNetwork("transfer", num_categories=3)
         print (' ') 
         print ('Starting to save')
-        model.save(MODELS_DIR + name)
+        model.save(os.path.join(MODELS_DIR, name))
         print ('Done saving')
         return
 
@@ -42,33 +42,38 @@ class Main:
     def train(trainning_set, name, epochs):
         Main.__setup()
         print ('Loading Model')
-        model = NeuralNetwork("load", file_path=MODELS_DIR + name)
+        model = NeuralNetwork("load", file_path=os.path.join(MODELS_DIR, name))
         print ('Done Loading Model')
         print (' ') 
         print ('Loading Images Please Be Patient')
         
-        if not os.path.exists(TRAIN_DIR + trainning_set + "/labels.p"):
-            Pickler.pickleIndividualSet(TRAIN_DIR + trainning_set)
+        if not os.path.exists(os.path.join(TRAIN_DIR,
+                                trainning_set, "labels.p")):
+            Pickler.pickleIndividualSet(os.path.join(TRAIN_DIR,trainning_set))
         
-        labels = pickle.load(open(TRAIN_DIR 
-            + trainning_set + "/labels.p","rb"))
+        labels = pickle.load(open(os.path.join(TRAIN_DIR 
+             ,trainning_set,"labels.p"),"rb"))
 
-        if not os.path.exists(TRAIN_DIR+ trainning_set + "/transfer_values.p"):
-            tc.getTransferValues(TRAIN_DIR + trainning_set + "/images.p",
-                    TRAIN_DIR + trainning_set + "/transfer_values.p")
+        if not os.path.exists(os.path.join(TRAIN_DIR,
+                                    trainning_set, "transfer_values.p")):
+            tc.getTransferValues(
+                os.path.join(TRAIN_DIR, trainning_set, "images.p"),
+                os.path.join(TRAIN_DIR, trainning_set, "transfer_values.p")
+                )
 
-        imgs =  pickle.load(open(TRAIN_DIR
-            + trainning_set + "/transfer_values.p","rb"))
+        imgs =  pickle.load(open(os.path.join(
+            TRAIN_DIR,trainning_set, "transfer_values.p"),"rb"))
         encoding = [Constants.ABNORMAL, Constants.NORMAL, Constants.WEIRD]
         print ('Done Loading Images')
         print (' ')
         print ('Starting to train')
         model = NeuralNetwork("transfer", num_categories=len(encoding))
-        history = model.train(MODELS_DIR + name, imgs, labels, epochs)
+        history = model.train(os.path.join(MODELS_DIR,name)
+                                        , imgs, labels, epochs)
         print ('Done Training')
         print (' ')
         print ('Starting to save')
-        model.save(MODELS_DIR + name)
+        model.save(os.path.join(MODELS_DIR,name))
         print ('Done saving')
         return
 
@@ -76,11 +81,11 @@ class Main:
     def predict(pred_set, name):
         Main.__setup()
         print ('Loading Model')
-        model = NeuralNetwork("load", file_path=MODELS_DIR + name)
+        model = NeuralNetwork("load", file_path=os.path.join(MODELS_DIR, name))
         print ('Done Loading Model')
         print (' ')
         print ('Starting to predict')
-        Predictor.predict_wells(PRED_DIR + pred_set, 
+        Predictor.predict_wells(os.path.join(PRED_DIR,pred_set), 
                     [Constants.ABNORMAL,
                         Constants.NORMAL,
                         Constants.WEIRD],
@@ -91,11 +96,11 @@ class Main:
     def test_wells(test_set, name):
         Main.__setup()
         print ('Loading Model')
-        model = NeuralNetwork("load", file_path=MODELS_DIR + name)
+        model = NeuralNetwork("load", file_path=os.path.join(MODELS_DIR,name))
         print ('Done Loading Model')
         print (' ') 
         print ('Starting to predict')
-        Predictor.test_wells(TEST_WELLS_DIR + test_set,
+        Predictor.test_wells(os.path.join(TEST_WELLS_DIR, test_set),
                 [Constants.ABNORMAL,
                     Constants.NORMAL,
                     Constants.WEIRD],
@@ -106,23 +111,26 @@ class Main:
     def test_individual(test_set, name):
         Main.__setup()
         print ('Loading Model')
-        model = NeuralNetwork("load", file_path=MODELS_DIR + name)
+        model = NeuralNetwork("load", file_path=os.path.join(MODELS_DIR, name))
         print ('Done Loading Model')
         print (' ')
         print ('Loading Images Please Be Patient')
 
-        if not os.path.exists(TEST_INDL_DIR + test_set + "/labels.p"):
-            Pickler.pickleIndividualSet(TEST_INDL_DIR + test_set)
+        if not os.path.exists(
+                os.path.join(TEST_INDL_DIR, test_set, "labels.p")):
+            Pickler.pickleIndividualSet(os.path.join(TEST_INDL_DIR, test_set))
 
-        labels = pickle.load(open(TEST_INDL_DIR 
-            + test_set + "/labels.p","rb"))
+        labels = pickle.load(open(os.path.join(TEST_INDL_DIR 
+            ,test_set, "labels.p"),"rb"))
         
-        if not os.path.exists(TEST_INDL_DIR + test_set + "/transfer_values.p"):
-            tc.getTransferValues(TEST_INDL_DIR + test_set + "/images.p",
-                    TEST_INDL_DIR + test_set + "/transfer_values.p")
+        if not os.path.exists(
+                os.path.join(TEST_INDL_DIR, test_set, "transfer_values.p")):
+            tc.getTransferValues(
+                os.path.join(TEST_INDL_DIR, test_set, "images.p"),
+                os.path.join(TEST_INDL_DIR, test_set, "transfer_values.p"))
 
-        imgs =  pickle.load(open(TEST_INDL_DIR
-            + test_set + "/transfer_values.p","rb"))
+        imgs =  pickle.load(open(os.path.join(TEST_INDL_DIR
+            ,test_set , "transfer_values.p"),"rb"))
         print ('Done Loading Images')
         print (' ')
         print ('Testing accuracy on individual images')
